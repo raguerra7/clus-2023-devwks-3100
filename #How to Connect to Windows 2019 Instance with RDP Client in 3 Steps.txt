@@ -1,0 +1,25 @@
+How to Connect to Windows 2019 Instance with RDP Client in 3 Steps
+
+#1 - Download private-key clus-2023-key.pem
+
+#2 - How to get the decrypted password from Windows 2019 Instance
+    
+    Execute: aws ec2 get-password-data --instance-id  i-1234567890abcdef0 --priv-launch-key /path/clus-2023-key.pem
+
+Output Example:
+
+{
+    "InstanceId": "i-1234567890abcdef0",  
+    "Timestamp": "2023-12-30T23:18:05.000Z",
+    "PasswordData": "&CLUS2023*u" <- Copy only the info inside the quotation marks " "
+}
+
+#3 - Get the decrypted password and open the rdp client:
+
+IP/FQDN: "win2019_public_ip" or "win2019_public_dns"
+User: Administrator  <- Must use it
+Password: "PasswordData" <- Use the decrypted password ("PasswordData")
+
+
+
+#TIP if you forgot the terraform output, execute terraform output in your terminal

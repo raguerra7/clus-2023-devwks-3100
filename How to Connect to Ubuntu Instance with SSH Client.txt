@@ -1,0 +1,17 @@
+How to Connect to Ubuntu Instance by SSH Client in 3 Steps
+
+1 - Download private-key clus-2023-key.pem
+
+2 - Change permissions for use the private-key
+    
+    Execute: chmod 400 clus-2023-key.pem
+
+3 - Keep the same terminal into Visio or use another ssh client:
+
+Execute: ssh -i /path/clus-2023-key.pem ubuntu@instance-public-dns-name
+
+or
+
+Execute: ssh -i /path/clus-2023-key.pem ubuntu@instance-IPv4-address
+
+#TIP if you forgot the terraform output, execute terraform output in your terminal

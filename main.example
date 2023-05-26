@@ -1,0 +1,163 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
+
+}
+
+# Configure the AWS Provider
+provider "aws" {
+	region = "us-east-1"
+}
+
+resource "aws_vpc" "my_vpc" {
+  cidr_block           = "10.CHANGE-ME.0.0/16"
+  enable_dns_hostnames = true
+  tags = {
+    Name = "POD-CHANGE-ME My VPC"
+  }
+}
+
+resource "aws_subnet" "public" {
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = "10.CHANGE-ME.0.0/24"
+  availability_zone = "us-east-1c"
+  tags = {
+    Name = "POD-CHANGE-ME Public Subnet"
+  }
+}
+
+resource "aws_internet_gateway" "my_vpc_igw" {
+  vpc_id = aws_vpc.my_vpc.id
+  tags = {
+    Name = "POD-CHANGE-ME My VPC - Internet Gateway"
+  }
+}
+
+resource "aws_route_table" "my_vpc_us-east-1c_public" {
+    vpc_id = aws_vpc.my_vpc.id
+    route {
+        cidr_block = "0.0.0.0/0"
+        gateway_id = aws_internet_gateway.my_vpc_igw.id
+    }
+    tags = {
+        Name = "POD-CHANGE-ME Public Subnet Route Table"
+    }
+}
+resource "aws_route_table_association" "my_vpc_us-east-1c_public" {
+    subnet_id      = aws_subnet.public.id
+    route_table_id = aws_route_table.my_vpc_us-east-1c_public.id
+}
+
+resource "aws_security_group" "allow_ports" {
+  name        = "pod-change-me-allow_specific-ports_sg"
+  description = "Allow specific inbound connections"
+  vpc_id      = aws_vpc.my_vpc.id
+  # for SSH
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  # for HTTP Apache Server
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  # for RDP
+  ingress {
+    from_port        = 3389
+    to_port          = 3389
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+  # for ping
+  ingress {
+    from_port        = -1
+    to_port          = -1
+    protocol         = "icmp"
+    cidr_blocks      = ["10.CHANGE-ME.0.0/16"]
+  }
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "POD-CHANGE-ME allow_specific-ports_sg"
+  }
+}
+
+resource "aws_instance" "ubuntu2004" {
+  ami                         = "ami-053b0d53c279acc90" # Ubuntu 20.04 us-east-1 N.Virginia
+  instance_type               = "t2.nano"
+  key_name                    = "clus-2023-key"
+  vpc_security_group_ids      = [aws_security_group.allow_ports.id]
+  subnet_id                   = aws_subnet.public.id
+  associate_public_ip_address = true
+  user_data = <<-EOF
+		           #! /bin/bash
+               sudo apt-get update
+		           sudo apt-get install -y apache2
+		           sudo systemctl start apache2
+		           sudo systemctl enable apache2
+               sudo apt install net-tools
+		           echo "<h1>CLUS 2023 DEVWKS-3100 - POD-CHANGE-ME - Deployed via Terraform from $(hostname -f)</h1>" | sudo tee /var/www/html/index.html
+  EOF
+  tags = {
+    Name = "POD-CHANGE-ME Ubuntu 20.04"
+  }
+}
+
+resource "aws_instance" "win2019" {
+	ami                         = "ami-0ab05a04b66a879af" # Windows 2019 Server with Desktop GUI us-east-1 N.Virginia
+	instance_type               = "t2.micro"
+  key_name                    = "clus-2023-key"
+  vpc_security_group_ids      = [aws_security_group.allow_ports.id]
+  subnet_id                   = aws_subnet.public.id  
+	associate_public_ip_address = true
+    tags = {
+		Name = "POD-CHANGE-ME Win 2019 Server"
+	}
+}
+
+# Outputs session
+
+output "instance_ubuntu2004_id" {
+  description = "ID of the POD-CHANGE-ME Ubuntu 2004 instance"
+  value       = "${aws_instance.ubuntu2004.id}"
+}
+
+output "instance_ubuntu2004_public_ip" {
+  value = "${aws_instance.ubuntu2004.public_ip}"
+}
+
+output "instance_ubuntu2004_public_dns" {
+  description = "The public DNS name assigned to the POD-CHANGE-ME Ubuntu 2004 instance"
+  value = try(
+    aws_instance.ubuntu2004.public_dns,
+  )
+}  
+
+output "instance_win2019_id" {
+  description = "ID of the POD-CHANGE-ME Windows 2019 instance"
+  value       = "${aws_instance.win2019.id}"
+}
+
+output "instance_win2019_public_ip" {
+  value = "${aws_instance.win2019.public_ip}"
+}
+
+output "instance_win2019_public_dns" {
+  description = "The public DNS name assigned to the POD-CHANGE-ME Ubuntu 2004 instance"
+  value = try(
+    aws_instance.ubuntu2004.public_dns,
+  )
+}  
