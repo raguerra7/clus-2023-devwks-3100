@@ -17,7 +17,7 @@ Output Example:
 #3 - Get the decrypted password and open the rdp client:
 
 IP/FQDN: "win2019_public_ip" or "win2019_public_dns"
-User: Administrator  <- Must use it
+User: \Administrator  <- Must use it
 Password: "PasswordData" <- Use the decrypted password ("PasswordData")
 
 

@@ -1,6 +1,48 @@
 How to Connect to Ubuntu Instance by SSH Client in 3 Steps
 
-1 - Download private-key clus-2023-key.pem
+1 - Download private-key clus-2023-key.pem and clus-2023-key.ppk
+
+####### if you are using Windows Machine
+
+2 - Change permissions for use the  the keys at clus-2023-devwks-3100-main folder.
+   
+   Follow the process below:
+
+ #1 - Click inside the Type here to search box on the Start menu, or you can press the Windows + S keys at the same time.
+ #2 - Input cmd in your search box and open Command Prompt with elevated rights by selecting Run as administrator.
+ #3 - Type in this takeown command:
+        takeown /F "path/clus-2023-devwks-3100-main"
+
+        Press the Enter keyboard key to take ownership of the folder.
+
+3 - Keep the same terminal into Visio and open the putty:
+
+    Start PuTTY (from the Start menu, choose All Programs, PuTTY, PuTTY).
+
+    In the Category pane, choose Session and complete the following fields:
+
+        In the Host Name box, do one of the following:
+
+            - (Public DNS) To connect using your instance's public DNS name, enter ubuntu@instance-public-dns-name
+            - (Public IP) To connect using your instance's public DNS name, enter ubuntu@instance-IPv4-address
+
+        Ensure that the Port value is 22.
+
+        Under Connection type, select SSH.
+
+    In the Category pane, expand Connection, expand SSH, and then choose Auth. Complete the following:
+
+        Choose Browse.
+
+        Select the .ppk file and choose Open.
+
+        (Optional) If you plan to start this session again later, you can save the session information for future use. Under Category, choose Session, enter a name for the session in Saved Sessions, and then choose Save.
+
+        Choose Open.
+
+
+
+####### if you are using Linux Machine
 
 2 - Change permissions for use the private-key
     
@@ -8,10 +50,12 @@ How to Connect to Ubuntu Instance by SSH Client in 3 Steps
 
 3 - Keep the same terminal into Visio or use another ssh client:
 
-Execute: ssh -i /path/clus-2023-key.pem ubuntu@instance-public-dns-name
+    Execute: ssh -i /path/clus-2023-key.pem ubuntu@instance-public-dns-name
 
-or
+        or
 
-Execute: ssh -i /path/clus-2023-key.pem ubuntu@instance-IPv4-address
+    Execute: ssh -i /path/clus-2023-key.pem ubuntu@instance-IPv4-address
+
 
 #TIP if you forgot the terraform output, execute terraform output in your terminal
+
