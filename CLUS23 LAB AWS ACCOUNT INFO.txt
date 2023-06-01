@@ -1,0 +1,27 @@
+CLUS23 LAB AWS ACCOUNT INFO
+
+Configure AWS with AWS CLI (use command: aws configure):
+
+Execute: aws configure
+
+AWS Access Key ID [None]: AKIA3XYIAJS6GCJKWPOP
+AWS Secret Access Key [None]: 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
+Default region name [None]: us-east-1
+Default output format [None]: json
+
+After command, AWS creates:
+
+Credentials file => C:\Users\username.aws\credentials
+Config file => C:\Users\username.aws\config
+
+# credentials file
+[default]
+aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+# config file
+[default]
+region = eu-central-1
+output = json
+
+

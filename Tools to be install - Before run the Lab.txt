@@ -1,0 +1,18 @@
+Tools to be install if isn't installed.
+
+# AWS CLI 
+
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+#Terraform 
+
+https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
+
+
+#Homebrew for Mac Users
+
+https://brew.sh/
+
+#Chocolatey for Windows Users
+
+https://chocolatey.org/install#individual
