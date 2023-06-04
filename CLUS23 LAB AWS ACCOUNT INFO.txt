@@ -4,8 +4,8 @@ Configure AWS with AWS CLI (use command: aws configure):
 
 Execute: aws configure
 
-AWS Access Key ID [None]: AKIA3XYIAJS6GCJKWPOP
-AWS Secret Access Key [None]: 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
+AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 Default region name [None]: us-east-1
 Default output format [None]: json
 
